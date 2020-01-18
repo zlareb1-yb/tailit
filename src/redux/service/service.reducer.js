@@ -1,28 +1,41 @@
-import ServiceActionTypes from './service.types';
+import ServiceActionTypes from "./service.types";
 
 const INITIAL_STATE = {
-  pcIP: null,
-  username: null,
-  password: null,
-  serviceName: null,
-  pid: null,
-  logFileLink: null,
+  serviceInfo: {
+    ip: null,
+    username: null,
+    password: null,
+    logPath: null
+  },
+  processInfo: {
+    fileLink: null,
+    pid: null
+  },
   error: null
 };
 
 const serviceReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case ServiceActionTypes.LOG_COLLECTION_TRIGGER_START:
-      console.log("hh")
+      console.log("reduce");
       return {
         ...state,
-        service_info: action.payload,
+        serviceInfo: action.payload,
+        error: null
+      };
+    case ServiceActionTypes.LOG_COLLECTION_TRIGGER_SUCCESS:
+      console.log("reduce_success");
+      console.log(state);
+      console.log(action.payload);
+      return {
+        ...state,
+        processInfo: action.payload,
         error: null
       };
     case ServiceActionTypes.LOG_COLLECTION_STOP:
       return {
         ...state,
-        service_info: INITIAL_STATE,
+        serviceInfo: INITIAL_STATE.serviceInfo,
         error: null
       };
     case ServiceActionTypes.LOG_COLLECTION_RESET:

@@ -10,18 +10,21 @@ import end_points from '../../constants/end_points';
 
 export function* logCollectionTriggerAsync(action){
     try{
-        const serviceInfo = yield action.payload;
-        const pcIP = serviceInfo['pcIP']
+        console.log('saga')
+        const serviceInfo = action.payload;
+        const ip = serviceInfo['ip']
         const username = serviceInfo['username']
         const password = serviceInfo['password']
-        const serviceName = serviceInfo['serviceName']
+        const logPath = serviceInfo['logPath']
+        /*
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ pcIP, username, password, serviceName })
         };
-        const res = yield fetch(end_points['log_collection_trigger'], requestOptions);
-        yield put(logCollectionTriggerSuccess(res))
+        */
+        //const res = yield fetch(end_points['log_collection_trigger'], requestOptions);
+        yield put(logCollectionTriggerSuccess({fileLink: 'abcd', pid: 123}))
     } catch(error){
         yield put(logCollectionTriggerFailure(error.message));
     }
