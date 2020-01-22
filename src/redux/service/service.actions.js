@@ -1,4 +1,19 @@
 import ServiceActionTypes from './service.types';
+ 
+export const addServiceStart = service => ({
+    type: ServiceActionTypes.ADD_SERVICE_START,
+    payload: service
+});
+
+export const addServiceSuccess = service => ({
+  type: ServiceActionTypes.ADD_SERVICE_SUCCESS,
+  payload: service
+});
+
+export const addServiceFailure = service => ({
+  type: ServiceActionTypes.ADD_SERVICE_FAILURE,
+  payload: service
+});
 
 export const logCollectionTriggerStart = serviceInfo => ({
     type: ServiceActionTypes.LOG_COLLECTION_TRIGGER_START,

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const ServicesContainer = styled.div`
   width: 250px;
@@ -13,4 +13,12 @@ export const ServicesTitle = styled.h2`
 export const ButtonsBarContainer = styled.div`
   display: flex;
   justify-content: space-between;
+`;
+
+export const FileLink = styled.a`
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
 `;

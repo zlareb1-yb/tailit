@@ -5,31 +5,81 @@ import { connect } from "react-redux";
 import Services from "../../components/services/services.component";
 //import SERVICES_DATA from "./service.data";
 
-import { ServicesContainer } from "./services.styles";
+import { ServicesContainer, ServiceTitle } from "./services.styles";
+import CustomButton from "../../components/custom-button/custom-button.component";
 
-const INITIAL_STATE = [<Services key={1} />]
+import { usePersistedState } from "../../redux/localstorage.utils";
 
-const ServicesPage = () => {
+import {
+  addServiceStart
+} from "../../redux/service/service.actions";
 
-    const [serviceList, setServiceList] = useState(INITIAL_STATE)
+const INITIAL_STATE = [<Services uuid={0} />];
 
+const getInitialState = (service, defaultVal) => {
+  console.log('abc');
+  var serviceList = [];
+  if (service) {
+    console.log(service);
+    for (const uuid of Object.keys(service)) {
+      console.log('aa')
+      console.log(serviceList);
+      console.log(uuid);
+      serviceList.push(<Services uuid={uuid} />);
+    }
+  } else serviceList = defaultVal;
+  
+  return serviceList;
+};
 
-    const handleAdd = () => {
-        setServiceList(serviceList.concat(<Services key={serviceList.length} />))
-    };
-  /*
-    return (
-        <ServicesContainer>
-            {SERVICES_DATA.map((service) => <Services />)}
-        </ServicesContainer>
-    );
-    */
+const ServicesPage = ({ service, addServiceStart }) => {
+
+  useEffect(() => {
+    console.log('mm')
+    addServiceStart(service);
+  }, []); 
+
+  const [serviceList, setServiceList] = useState(
+    getInitialState(service, INITIAL_STATE)
+  );
+
+  //const [serviceListInRedux, setServiceListInRedux] = usePersistedState('serviceList', INITIAL_STATE)
+
+  const handleAdd = () => {
+    
+    console.log('nn')
+    console.log(service);
+    addServiceStart(service);
+    setServiceList(serviceList.concat(<Services uuid={serviceList.length} />));
+
+    //console.log(serviceListInRedux);
+  };
+
+  //{serviceListInRedux ? Object.keys(serviceListInRedux).length : null}
+
   return (
-    <ServicesContainer>
-        <button onClick={handleAdd}>Add</button>
-        {serviceList}
-    </ServicesContainer>
+    <div className="shop-page">
+      <ServiceTitle>File Information for collecting Logs</ServiceTitle>
+      <ServicesContainer>{serviceList}</ServicesContainer>
+      <CustomButton
+        title="Add Another File Information"
+        disabled={serviceList.length >= 3}
+        onClick={handleAdd}
+      >
+        Add
+      </CustomButton>
+    </div>
   );
 };
 
-export default ServicesPage;
+const mapStateToProps = state => ({
+  service: state.service.serviceList
+    ? state.service.serviceList 
+    : null
+});
+
+const mapDispatchToProps = dispatch => ({
+  addServiceStart: service => dispatch(addServiceStart(service))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ServicesPage);

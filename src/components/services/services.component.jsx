@@ -2,12 +2,21 @@ import React, { useState } from "react";
 
 import { connect } from "react-redux";
 
+import FormInput from "../form-input/form-input.component";
+import CustomButton from "../custom-button/custom-button.component";
+
 import {
   logCollectionTriggerStart,
   logCollectionStop
 } from "../../redux/service/service.actions";
 
-import { ServicesContainer } from "./services.styles";
+import {
+  ServicesContainer,
+  ButtonsBarContainer,
+  FileLink
+} from "./services.styles";
+
+import { usePersistedState } from "../../redux/localstorage.utils";
 
 const INITIAL_STATE = {
   ip: "",
@@ -17,10 +26,17 @@ const INITIAL_STATE = {
 };
 
 const Services = ({
+  uuid,
   logCollectionStop,
   logCollectionTriggerStart,
   processInfo
 }) => {
+
+  const [serviceList, setServiceList] = usePersistedState(
+    processInfo,
+    INITIAL_STATE
+  );
+  
   const [serviceInfo, setServiceInfo] = useState(INITIAL_STATE);
 
   const { ip, username, password, logPath } = serviceInfo;
@@ -29,6 +45,7 @@ const Services = ({
     event.preventDefault();
 
     logCollectionTriggerStart({
+      uuid,
       ip,
       username,
       password,
@@ -49,25 +66,55 @@ const Services = ({
 
   return (
     <ServicesContainer>
+      <span>Logs Link: </span>
+      {processInfo ? (
+        <FileLink href={processInfo.fileLink} target="_blank">
+          {processInfo.fileLink}
+        </FileLink>
+      ) : null}
+      <CustomButton type="button" isGoogleSignIn>
+        Copy
+      </CustomButton>
       <form className="service-form" onSubmit={handleSubmit}>
-        <p>IP</p>
-        <input name="ip" value={ip} onChange={handleChange} />
-        <p>Username</p>
-        <input name="username" value={username} onChange={handleChange} />
-        <p>Password</p>
-        <input name="password" value={password} onChange={handleChange} />
-        <p>Log Path</p>
-        <input name="logPath" value={logPath} onChange={handleChange} />
-        <br />
-        <p>Link: {processInfo ? processInfo.fileLink : null}</p>
-        <br />
-        <div>
-          <button type="submit">Start</button>
-          <button type="button" onClick={handleStop}>
+        <FormInput
+          name="ip"
+          type="ip"
+          handleChange={handleChange}
+          value={ip}
+          label="IP"
+          required
+        />
+        <FormInput
+          name="username"
+          type="username"
+          value={username}
+          handleChange={handleChange}
+          label="Username"
+          required
+        />
+        <FormInput
+          name="password"
+          type="password"
+          value={password}
+          handleChange={handleChange}
+          label="Password"
+          required
+        />
+        <FormInput
+          name="logPath"
+          type="logPath"
+          value={logPath}
+          handleChange={handleChange}
+          label="Log Path"
+          required
+        />
+        <ButtonsBarContainer>
+          <CustomButton type="submit"> Start </CustomButton>
+          <CustomButton type="button" onClick={handleStop}>
             Stop
-          </button>
-          <button type="button">Reset</button>
-        </div>
+          </CustomButton>
+          <CustomButton type="button"> Reset </CustomButton>
+        </ButtonsBarContainer>
       </form>
     </ServicesContainer>
   );
@@ -80,7 +127,11 @@ const mapDispatchToProps = dispatch => ({
 });
 
 //const mapStateToProps = state => ({ serviceInfo: state.service.serviceInfo });
-const mapStateToProps = state => ({ processInfo: state.service.processInfo });
+const mapStateToProps = (state, props) => ({
+  processInfo: state.service[props.uuid]
+    ? state.service[props.uuid].processInfo
+    : {}
+});
 
 export default connect(
   mapStateToProps,

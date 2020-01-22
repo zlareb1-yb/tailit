@@ -7,6 +7,7 @@ import serviceReducer from './service/service.reducer';
 const persistConfig = {
   key: 'root',
   storage,
+  whitelist: ['service']
 };
 
 const rootReducer = combineReducers({

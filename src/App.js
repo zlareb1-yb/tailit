@@ -1,14 +1,14 @@
 import React from 'react';
 import './App.css';
 import ServicesPage from './pages/services/services.component';
+import Header from './components/header/header.component';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
+    <div>
+        <Header />
         <ServicesPage />
-      </header>
-    </div>
+      </div>
   );
 }
 
